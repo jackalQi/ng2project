@@ -65,11 +65,12 @@ router.get('/', function(req,res) {
   console.log('Loading the list');
   params = {
     TableName: table,
-    Key:{
-      "pk":2
-    }
+    Limit: 30
+    // IndexName : 'pk',
+    //KeyConditionExpression: 'articleId =:x',
+    //ExpressionAttributeValues: { ':x' : ARTICLE_ID}
   };
-  docClient.get(params, function(err,data){
+  docClient.scan(params, function(err,data){
     if(err){
       console.error("Unable to read Item. Error Json",
       JSON.stringify(err,null,2));
@@ -131,10 +132,17 @@ router.get('/:pk', function(req,res) {
 router.put('/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Updating the list #'+pk);
+  console.log(req.body);
+  console.log(req.body.name);
   params = {
     TableName: table,
-    Key: req.body
+    Key: pk,
+    UpdateExpression: "set address=address, job=job",
+    ExpressionAttributeValues: JSON.stringify(req.body),
+    ReturnValues:"UPDATED_NEW"
+    //ConditionExpression: "size(info.actors > :num)"
   };
+
   docClient.update(params, function(err,data){
     if(err){
       console.error("Unable to Update Item. Error Json",
