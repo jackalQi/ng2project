@@ -1,5 +1,11 @@
-app.use(bodyParser.json());
-app.use(cors())
+const express = require('express');
+const app = express();
+const router = express.Router();
+const aws = require('aws-sdk');
+const dynamodb = new aws.DynamoDB();
+
+var myData;
+
 aws.config.update({
   region: "us-east-2",
   endpoint: "dynamodb.us-east-2.amazonaws.com",
@@ -9,19 +15,18 @@ aws.config.update({
 
 var docClient = new aws.DynamoDB.DocumentClient();
 var qitable = "fridayProject";
-var kbtable = "calendar";
 var params;
 
 
 router.use(function(req,res,next){
-  console.log('Something is happening.');
+  console.log('User Index.');
   next();
 });
 
 //Qi Page
 //List Page
 //####################################################################
-router.get('qi/', function(req,res) {
+router.get('/', function(req,res) {
   console.log('Loading the list');
   params = {
     TableName: qitable,
@@ -43,7 +48,7 @@ router.get('qi/', function(req,res) {
   });
 });
 
-router.post('qi/', function(req,res) {
+router.post('/', function(req,res) {
   console.log('Creating the item');
   console.log('Req.params');
   console.log(req.params.pk);
@@ -69,7 +74,7 @@ router.post('qi/', function(req,res) {
 // Detail Page
 // Qi Page.
 //########################################################################
-router.get('qi/:pk', function(req,res) {
+router.get('/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Loading the list #'+pk);
   params = {
@@ -90,7 +95,7 @@ router.get('qi/:pk', function(req,res) {
   });
 });
 
-router.put('qi/:pk', function(req,res) {
+router.put('/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Updating the list #'+pk);
   console.log(req.body);
@@ -116,7 +121,7 @@ router.put('qi/:pk', function(req,res) {
   });
 });
 
-router.delete('qi/:pk', function(req,res) {
+router.delete('/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Delete #'+pk);
   params = {
@@ -134,3 +139,5 @@ router.delete('qi/:pk', function(req,res) {
     }
   });
 });
+
+module.exports = router;
