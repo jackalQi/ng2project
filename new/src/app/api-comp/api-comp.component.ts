@@ -18,11 +18,12 @@ export class ApiCompComponent implements OnInit {
   ngOnInit() {
     this.getUsers();
   }
+
   public getUsers(){
     console.log("getUser is loaded");
     this.apiService.getUsers().subscribe(
       (data:Array<object>)=>{
-        this.users = data.Items;
+        this.users = data;
         console.log(data);
       }
     )
