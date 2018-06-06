@@ -29,7 +29,8 @@ aws.config.update({
 //DynamoDB
 //====================================================
 var docClient = new aws.DynamoDB.DocumentClient();
-var table = "fridayProject";
+var qitable = "fridayProject";
+var kbtable = "calendar";
 var params;
 
 //ROUTING
@@ -59,12 +60,13 @@ router.use(function(req,res,next){
   next();
 });
 
+//Qi Page
 //List Page
 //####################################################################
-router.get('/', function(req,res) {
+router.get('qi/', function(req,res) {
   console.log('Loading the list');
   params = {
-    TableName: table,
+    TableName: qitable,
     Limit: 30
     // IndexName : 'pk',
     //KeyConditionExpression: 'articleId =:x',
@@ -83,7 +85,7 @@ router.get('/', function(req,res) {
   });
 });
 
-router.post('/', function(req,res) {
+router.post('qi/', function(req,res) {
   console.log('Creating the item');
   console.log('Req.params');
   console.log(req.params.pk);
@@ -91,7 +93,7 @@ router.post('/', function(req,res) {
   console.log(req.body);
 
   params = {
-    TableName: table,
+    TableName: qitable,
     Item: req.body
   };// Turn Item to item Dict
   docClient.put(params, function(err,data){
@@ -107,12 +109,13 @@ router.post('/', function(req,res) {
 });
 
 // Detail Page
+// Qi Page.
 //########################################################################
-router.get('/:pk', function(req,res) {
+router.get('qi/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Loading the list #'+pk);
   params = {
-    TableName: table,
+    TableName: qitable,
     Key:{
       "pk": pk
     }
@@ -129,7 +132,124 @@ router.get('/:pk', function(req,res) {
   });
 });
 
-router.put('/:pk', function(req,res) {
+router.put('qi/:pk', function(req,res) {
+  pk =  Number(req.params.pk);
+  console.log('Updating the list #'+pk);
+  console.log(req.body);
+  console.log(req.body.name);
+  params = {
+    TableName: qitable,
+    Key: pk,
+    UpdateExpression: "set address=address, job=job",
+    ExpressionAttributeValues: JSON.stringify(req.body),
+    ReturnValues:"UPDATED_NEW"
+    //ConditionExpression: "size(info.actors > :num)"
+  };
+
+  docClient.update(params, function(err,data){
+    if(err){
+      console.error("Unable to Update Item. Error Json",
+      JSON.stringify(err,null,2));
+    } else{
+      console.log("UpdateItem Succeedded", JSON.stringify(data,null,2));
+      myData = data;
+      res.json(myData);
+    }
+  });
+});
+
+router.delete('qi/:pk', function(req,res) {
+  pk =  Number(req.params.pk);
+  console.log('Delete #'+pk);
+  params = {
+    TableName: qitable,
+    Key:{
+      "pk": pk
+    }
+  };
+  docClient.delete(params, function(err,data){
+    if(err){
+      console.error("Unable to Delete Item. Error Json",
+      JSON.stringify(err,null,2));
+    } else{
+      console.log("DeleteItem Succeedded", JSON.stringify(data,null,2));
+    }
+  });
+});
+
+//Kyungbae Page
+//List Page
+//####################################################################
+router.get('kb/', function(req,res) {
+  console.log('Loading the list');
+  params = {
+    TableName: kbtable,
+    Limit: 30
+    // IndexName : 'pk',
+    //KeyConditionExpression: 'articleId =:x',
+    //ExpressionAttributeValues: { ':x' : ARTICLE_ID}
+  };
+  docClient.scan(params, function(err,data){
+    if(err){
+      console.error("Unable to read Item. Error Json",
+      JSON.stringify(err,null,2));
+      res.send('Error');
+    } else{
+      console.log("Get Item Succeedded", JSON.stringify(data,null,2));
+      myData = data;
+      res.json(myData);
+    }
+  });
+});
+
+router.post('kb/', function(req,res) {
+  console.log('Creating the item');
+  console.log('Req.params');
+  console.log(req.params.pk);
+  console.log('REQ Body');
+  console.log(req.body);
+
+  params = {
+    TableName: kbtable,
+    Item: req.body
+  };// Turn Item to item Dict
+  docClient.put(params, function(err,data){
+    if(err){
+      console.error("Unable to read Item. Error Json",
+      JSON.stringify(err,null,2));
+      res.send('Error');
+    } else{
+      console.log("Post Item Succeedded", JSON.stringify(data,null,2));
+      res.json(myData);
+    }
+  });
+});
+
+// Detail Page
+// Qi Page.
+//########################################################################
+router.get('kb/:pk', function(req,res) {
+  pk =  Number(req.params.pk);
+  console.log('Loading the list #'+pk);
+  params = {
+    TableName: kbtable,
+    Key:{
+      "pk": pk
+    }
+  };
+  docClient.get(params, function(err,data){
+    if(err){
+      console.error("Unable to read Item. Error Json",
+      JSON.stringify(err,null,2));
+    } else{
+      console.log("Get Item Succeedded", JSON.stringify(data,null,2));
+      myData = data;
+      res.json(myData);
+    }
+  });
+});
+
+router.put('kb/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Updating the list #'+pk);
   console.log(req.body);
@@ -155,7 +275,7 @@ router.put('/:pk', function(req,res) {
   });
 });
 
-router.delete('/:pk', function(req,res) {
+router.delete('kb/:pk', function(req,res) {
   pk =  Number(req.params.pk);
   console.log('Delete #'+pk);
   params = {
