@@ -17,8 +17,8 @@ import { FormsModule } from '@angular/forms';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { DemoUtilsModule } from './demo-utils/module';
 import { ApiCompComponent } from './api-comp/api-comp.component';
-import { SignInComponent } from './sign-in/sign-in.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
+import { SignInComponent } from './qi-main/sign-in/sign-in.component';
+import { SignUpComponent } from './qi-main/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
