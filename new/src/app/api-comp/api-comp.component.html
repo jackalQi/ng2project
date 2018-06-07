@@ -1,0 +1,16 @@
+<p>
+  api-comp works!
+</p>
+
+<table  style="width:100%">
+    <tr>
+      <th>pk</th>
+      <th>Name</th>
+      <th>Address</th>
+    </tr>
+    <tr *ngFor="let user of users.Items">
+      <td> {{ user.pk }} <td>
+      <td> {{ user.name }} </td>
+      <td> {{ user.address }} </td>
+    </tr>
+</table>
