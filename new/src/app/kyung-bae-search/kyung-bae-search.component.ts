@@ -42,10 +42,11 @@ const colors: any = {
 export class KyungBaeSearchComponent implements OnInit {
   @ViewChild('modalContent') modalContent: TemplateRef<any>;
 
-  constructor(private modal: NgbModal) {}
+  constructor(private modal: NgbModal) {
+    var mystr = "Feeling Good";
+  }
 
   ngOnInit() {
-    var mystr = "Feeling Good";
   }
 
   view: string = 'month';
